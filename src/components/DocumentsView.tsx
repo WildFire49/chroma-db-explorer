@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Table,
@@ -46,11 +46,7 @@ export default function DocumentsView({
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [isSearchMode, setIsSearchMode] = useState(false);
 
-  useEffect(() => {
-    fetchDocuments();
-  }, [collectionId]);
-
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     try {
       setLoading(true);
       const docs = await chromaService.getCollectionDocuments(collectionId);
@@ -64,7 +60,11 @@ export default function DocumentsView({
     } finally {
       setLoading(false);
     }
-  };
+  }, [collectionId]);
+
+  useEffect(() => {
+    fetchDocuments();
+  }, [fetchDocuments]);
 
   const handleSearchResults = (results: Document[]) => {
     setDocuments(results);
