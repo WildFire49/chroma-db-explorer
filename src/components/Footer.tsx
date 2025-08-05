@@ -1,5 +1,5 @@
 import { Box, Container, Typography, IconButton, Tooltip } from "@mui/material";
-import { GitHub, X, Copyright } from "@mui/icons-material";
+import { GitHub, X, LinkedIn, Copyright } from "@mui/icons-material";
 
 export default function Footer() {
   const handleGitHub = () => {
@@ -64,6 +64,21 @@ export default function Footer() {
                 }}
               >
                 <X fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Connect on LinkedIn">
+              <IconButton
+                size="small"
+                onClick={() => window.open('https://www.linkedin.com/in/vaishakh-krishnan/', '_blank')}
+                sx={{
+                  color: 'text.secondary',
+                  '&:hover': {
+                    color: '#0A66C2',
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <LinkedIn fontSize="small" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Follow on GitHub">

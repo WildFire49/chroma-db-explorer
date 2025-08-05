@@ -1,7 +1,16 @@
 'use client';
 
 import { createTheme, ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
-import { ReactNode } from 'react';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+import { ReactNode, useEffect, useState } from 'react';
+
+// Create emotion cache
+const createEmotionCache = () => {
+  return createCache({ key: 'css', prepend: true });
+};
+
+const clientSideEmotionCache = createEmotionCache();
 
 const theme = createTheme({
   palette: {
@@ -161,10 +170,23 @@ interface ThemeProviderProps {
 }
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent hydration mismatch by not rendering until client-side
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </MuiThemeProvider>
+    <CacheProvider value={clientSideEmotionCache}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
+    </CacheProvider>
   );
 }
