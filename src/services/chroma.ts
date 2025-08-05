@@ -89,7 +89,7 @@ export class ChromaService {
           dimension?: number | null;
           tenant?: string;
           database?: string;
-          configuration_json?: any;
+          configuration_json?: Record<string, unknown>;
           [key: string]: unknown;
         }) => ({
           id: collection.id,
