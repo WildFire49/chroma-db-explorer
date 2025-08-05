@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+type RouteContext = {
+  params: Promise<{ path: string[] }>;
+};
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: RouteContext
 ) {
+  const params = await context.params;
   try {
     const { searchParams } = new URL(request.url);
     const chromaHost = searchParams.get('host') || '3.6.132.24';
@@ -42,8 +47,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: RouteContext
 ) {
+  const params = await context.params;
   try {
     const { searchParams } = new URL(request.url);
     const chromaHost = searchParams.get('host') || '3.6.132.24';
