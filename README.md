@@ -64,5 +64,5 @@ If you find bugs or want to add features, PRs are welcome. Keep it simple though
 
 ---
 
-*Built by [@Vai2052](https://x.com/Vai2052) | [GitHub](https://github.com/WildFire49)*
+*Built by [@Vai2052](https://x.com/Vai2052) | [LinkedIn](https://www.linkedin.com/in/vaishakh-krishnan/) | [GitHub](https://github.com/WildFire49)*
 

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chroma-db-explorer.vercel.app/sitemap.xml

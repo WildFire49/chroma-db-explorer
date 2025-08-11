@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/react";
+import StructuredData from "@/components/StructuredData";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,19 +13,32 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://chroma-db-explorer.vercel.app"),
   title: {
-    default: "Chroma DB GUI & Explorer | The Ultimate Vector Database Manager",
-    template: `%s | Chroma DB GUI & Explorer`,
+    default: "Chroma DB UI - Best ChromaDB GUI & Vector Database Explorer",
+    template: `%s | Chroma DB UI - ChromaDB GUI`,
   },
   description:
-    "The ultimate GUI for Chroma DB. Browse, search, and manage your vector database collections with a clean, professional, and intuitive interface. Built for developers and data scientists by Vaishakh Krishnan.",
+    "Chroma DB UI - The best ChromaDB GUI and vector database explorer. Intuitive interface for managing ChromaDB collections, performing semantic searches, and visualizing vector embeddings. Perfect for AI developers and data scientists.",
   keywords: [
-    "Chroma DB GUI",
-    "ChromaDB UI",
-    "Chroma DB Explorer",
-    "Vector Database Manager",
-    "Semantic Search Tool",
-    "Next.js ChromaDB",
-    "Material UI Database GUI",
+    "chroma db ui",
+    "chroma db gui",
+    "chromadb ui",
+    "chromadb gui",
+    "chroma database ui",
+    "chroma database gui",
+    "vector database ui",
+    "vector database gui",
+    "chromadb explorer",
+    "chromadb manager",
+    "chromadb interface",
+    "chromadb web ui",
+    "chromadb dashboard",
+    "vector db ui",
+    "vector db gui",
+    "semantic search ui",
+    "embedding database ui",
+    "ai database gui",
+    "rag pipeline ui",
+    "machine learning database ui",
     "Vaishakh Krishnan",
     "AI development tools",
     "RAG pipeline",
@@ -40,9 +55,9 @@ export const metadata: Metadata = {
     canonical: "https://chroma-db-explorer.vercel.app",
   },
   openGraph: {
-    title: "Chroma DB GUI & Explorer | The Ultimate Vector Database Manager",
+    title: "Chroma DB UI - Best ChromaDB GUI & Vector Database Explorer",
     description:
-      "The ultimate GUI for Chroma DB. Browse, search, and manage your vector database collections with a clean and intuitive interface.",
+      "Chroma DB UI - The best ChromaDB GUI and vector database explorer. Intuitive interface for managing ChromaDB collections and performing semantic searches.",
     url: "https://chroma-db-explorer.vercel.app",
     siteName: "Chroma DB GUI & Explorer",
     images: [
@@ -58,9 +73,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Chroma DB GUI & Explorer | The Ultimate Vector Database Manager",
+    title: "Chroma DB UI - Best ChromaDB GUI & Vector Database Explorer",
     description:
-      "The ultimate GUI for Chroma DB. Browse, search, and manage your vector database collections.",
+      "Chroma DB UI - The best ChromaDB GUI and vector database explorer. Perfect for AI developers and data scientists.",
     creator: "@Vai2052",
     images: ["/Chroma.png"],
   },
@@ -88,7 +103,9 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className} suppressHydrationWarning>
+        <StructuredData />
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
