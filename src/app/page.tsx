@@ -96,7 +96,7 @@ export default function Home() {
               flexDirection: "column",
               py: 4,
               background:
-                "linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%)",
+                "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)",
             }}
           >
             <Box

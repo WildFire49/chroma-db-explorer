@@ -138,8 +138,7 @@ export default function DocumentsView({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        background:
-          "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)",
+        background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)",
         backdropFilter: "blur(20px)",
         border: "1px solid rgba(255, 255, 255, 0.1)",
         borderRadius: 3,
@@ -152,32 +151,14 @@ export default function DocumentsView({
           left: 0,
           right: 0,
           bottom: 0,
-          background:
-            "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%)",
+          background: "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%)",
           pointerEvents: "none",
           zIndex: 0,
         },
       }}
     >
-      <CardContent
-        sx={{
-          p: 0,
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          "&:last-child": { pb: 0 },
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        <Box
-          sx={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            p: 3,
-          }}
-        >
+      <CardContent sx={{ p: 0, height: "100%", display: "flex", flexDirection: "column", "&:last-child": { pb: 0 }, position: "relative", zIndex: 1 }}>
+        <Box sx={{ height: "100%", display: "flex", flexDirection: "column", p: 3 }}>
           {/* Header */}
           <Box
             sx={{
@@ -198,16 +179,10 @@ export default function DocumentsView({
                 <Description />
               </Avatar>
               <Box>
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 600, mb: 0.5, color: "white" }}
-                >
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, color: "white" }}>
                   Documents
                 </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "rgba(255, 255, 255, 0.7)" }}
-                >
+                <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                   {isSearchMode
                     ? "Search results"
                     : `${documents.length} document${
@@ -223,8 +198,7 @@ export default function DocumentsView({
                 label={`${documents.length} Total`}
                 sx={{
                   fontWeight: 600,
-                  background:
-                    "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
+                  background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
                   color: "white",
                   border: "1px solid rgba(255, 255, 255, 0.2)",
                   "& .MuiChip-label": {
@@ -258,24 +232,11 @@ export default function DocumentsView({
               }}
             >
               <Box sx={{ textAlign: "center" }}>
-                <DataObject
-                  sx={{
-                    fontSize: 64,
-                    color: "rgba(255, 255, 255, 0.5)",
-                    mb: 2,
-                  }}
-                />
-                <Typography
-                  variant="h6"
-                  sx={{ color: "white", mb: 1 }}
-                  gutterBottom
-                >
+                <DataObject sx={{ fontSize: 64, color: "rgba(255, 255, 255, 0.5)", mb: 2 }} />
+                <Typography variant="h6" sx={{ color: "white", mb: 1 }} gutterBottom>
                   No Documents Found
                 </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "rgba(255, 255, 255, 0.7)" }}
-                >
+                <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                   {isSearchMode
                     ? "Try adjusting your search query"
                     : "This collection appears to be empty"}
@@ -311,65 +272,18 @@ export default function DocumentsView({
               <Table stickyHeader>
                 <TableHead>
                   <TableRow sx={{ overflow: "auto" }}>
-                    <TableCell
-                      sx={{
-                        width: "50px",
-                        backgroundColor: "rgba(15, 23, 42, 0.98)",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                      }}
-                    ></TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: 600,
-                        color: "white",
-                        backgroundColor: "rgba(15, 23, 42, 0.98)",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                      }}
-                    >
-                      Document ID
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: 600,
-                        color: "white",
-                        backgroundColor: "rgba(15, 23, 42, 0.98)",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                      }}
-                    >
-                      Content
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: 600,
-                        color: "white",
-                        backgroundColor: "rgba(15, 23, 42, 0.98)",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                      }}
-                    >
-                      Metadata
-                    </TableCell>
+                    <TableCell sx={{ width: "50px", backgroundColor: "rgba(15, 23, 42, 0.98)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}></TableCell>
+                    <TableCell sx={{ fontWeight: 600, color: "white", backgroundColor: "rgba(15, 23, 42, 0.98)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>Document ID</TableCell>
+                    <TableCell sx={{ fontWeight: 600, color: "white", backgroundColor: "rgba(15, 23, 42, 0.98)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>Content</TableCell>
+                    <TableCell sx={{ fontWeight: 600, color: "white", backgroundColor: "rgba(15, 23, 42, 0.98)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>Metadata</TableCell>
                     {isSearchMode && (
-                      <TableCell
-                        align="center"
-                        sx={{
-                          fontWeight: 600,
-                          color: "white",
-                          backgroundColor: "rgba(15, 23, 42, 0.98)",
-                          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                        }}
-                      >
+                      <TableCell align="center" sx={{ fontWeight: 600, color: "white", backgroundColor: "rgba(15, 23, 42, 0.98)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
                         Distance
                       </TableCell>
                     )}
                     <TableCell
                       align="center"
-                      sx={{
-                        fontWeight: 600,
-                        width: "120px",
-                        color: "white",
-                        backgroundColor: "rgba(15, 23, 42, 0.98)",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                      }}
+                      sx={{ fontWeight: 600, width: "120px", color: "white", backgroundColor: "rgba(15, 23, 42, 0.98)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}
                     >
                       Actions
                     </TableCell>
@@ -407,18 +321,13 @@ export default function DocumentsView({
 
                         <TableCell>
                           <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
+                            sx={{ display: "flex", alignItems: "center", gap: 1 }}
                           >
                             <Avatar
                               sx={{
                                 width: 24,
                                 height: 24,
-                                bgcolor:
-                                  "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
+                                bgcolor: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
                                 fontSize: "0.75rem",
                               }}
                             >
@@ -450,29 +359,20 @@ export default function DocumentsView({
                         </TableCell>
 
                         <TableCell>
-                          {doc.metadata &&
-                          Object.keys(doc.metadata).length > 0 ? (
+                          {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
                             <Chip
-                              label={`${
-                                Object.keys(doc.metadata).length
-                              } field${
-                                Object.keys(doc.metadata).length !== 1
-                                  ? "s"
-                                  : ""
+                              label={`${Object.keys(doc.metadata).length} field${
+                                Object.keys(doc.metadata).length !== 1 ? "s" : ""
                               }`}
                               size="small"
                               sx={{
-                                background:
-                                  "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
+                                background: "linear-gradient(135deg, #10b981 0%, #06b6d4 100%)",
                                 color: "white",
                                 fontWeight: 500,
                               }}
                             />
                           ) : (
-                            <Typography
-                              variant="body2"
-                              sx={{ color: "rgba(255, 255, 255, 0.5)" }}
-                            >
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
                               No metadata
                             </Typography>
                           )}
@@ -485,18 +385,14 @@ export default function DocumentsView({
                                 label={doc.distance.toFixed(3)}
                                 size="small"
                                 sx={{
-                                  background:
-                                    "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
+                                  background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
                                   color: "white",
                                   fontWeight: 600,
                                   fontFamily: "monospace",
                                 }}
                               />
                             ) : (
-                              <Typography
-                                variant="body2"
-                                sx={{ color: "rgba(255, 255, 255, 0.5)" }}
-                              >
+                              <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
                                 —
                               </Typography>
                             )}
@@ -577,11 +473,7 @@ export default function DocumentsView({
                                 <CardContent sx={{ overflow: "auto" }}>
                                   <Typography
                                     variant="subtitle2"
-                                    sx={{
-                                      mb: 2,
-                                      fontWeight: 600,
-                                      color: "white",
-                                    }}
+                                    sx={{ mb: 2, fontWeight: 600, color: "white" }}
                                   >
                                     Full Document Content
                                   </Typography>
@@ -592,23 +484,19 @@ export default function DocumentsView({
                                       overflow: "auto",
                                       backgroundColor: "rgba(30, 41, 59, 0.8)",
                                       borderRadius: 1,
-                                      border:
-                                        "1px solid rgba(255, 255, 255, 0.1)",
+                                      border: "1px solid rgba(255, 255, 255, 0.1)",
                                       "&::-webkit-scrollbar": {
                                         width: "8px",
                                       },
                                       "&::-webkit-scrollbar-track": {
-                                        backgroundColor:
-                                          "rgba(255, 255, 255, 0.1)",
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
                                         borderRadius: "4px",
                                       },
                                       "&::-webkit-scrollbar-thumb": {
-                                        backgroundColor:
-                                          "rgba(255, 255, 255, 0.3)",
+                                        backgroundColor: "rgba(255, 255, 255, 0.3)",
                                         borderRadius: "4px",
                                         "&:hover": {
-                                          backgroundColor:
-                                            "rgba(255, 255, 255, 0.5)",
+                                          backgroundColor: "rgba(255, 255, 255, 0.5)",
                                         },
                                       },
                                     }}
@@ -631,47 +519,32 @@ export default function DocumentsView({
                                   {doc.metadata &&
                                     Object.keys(doc.metadata).length > 0 && (
                                       <>
-                                        <Divider
-                                          sx={{
-                                            my: 2,
-                                            borderColor:
-                                              "rgba(255, 255, 255, 0.1)",
-                                          }}
-                                        />
+                                        <Divider sx={{ my: 2, borderColor: "rgba(255, 255, 255, 0.1)" }} />
                                         <Typography
                                           variant="subtitle2"
-                                          sx={{
-                                            mb: 2,
-                                            fontWeight: 600,
-                                            color: "white",
-                                          }}
+                                          sx={{ mb: 2, fontWeight: 600, color: "white" }}
                                         >
                                           Metadata
                                         </Typography>
                                         <Box
                                           sx={{
-                                            backgroundColor:
-                                              "rgba(30, 41, 59, 0.8)",
+                                            backgroundColor: "rgba(30, 41, 59, 0.8)",
                                             borderRadius: 1,
-                                            border:
-                                              "1px solid rgba(255, 255, 255, 0.1)",
+                                            border: "1px solid rgba(255, 255, 255, 0.1)",
                                             maxHeight: "300px",
                                             overflow: "auto",
                                             "&::-webkit-scrollbar": {
                                               width: "8px",
                                             },
                                             "&::-webkit-scrollbar-track": {
-                                              backgroundColor:
-                                                "rgba(255, 255, 255, 0.1)",
+                                              backgroundColor: "rgba(255, 255, 255, 0.1)",
                                               borderRadius: "4px",
                                             },
                                             "&::-webkit-scrollbar-thumb": {
-                                              backgroundColor:
-                                                "rgba(255, 255, 255, 0.3)",
+                                              backgroundColor: "rgba(255, 255, 255, 0.3)",
                                               borderRadius: "4px",
                                               "&:hover": {
-                                                backgroundColor:
-                                                  "rgba(255, 255, 255, 0.5)",
+                                                backgroundColor: "rgba(255, 255, 255, 0.5)",
                                               },
                                             },
                                           }}
@@ -686,29 +559,16 @@ export default function DocumentsView({
                                               padding: "16px",
                                             }}
                                           >
-                                            {JSON.stringify(
-                                              doc.metadata,
-                                              null,
-                                              2
-                                            )}
+                                            {JSON.stringify(doc.metadata, null, 2)}
                                           </pre>
                                         </Box>
                                       </>
                                     )}
 
-                                  <Divider
-                                    sx={{
-                                      my: 2,
-                                      borderColor: "rgba(255, 255, 255, 0.1)",
-                                    }}
-                                  />
+                                  <Divider sx={{ my: 2, borderColor: "rgba(255, 255, 255, 0.1)" }} />
                                   <Typography
                                     variant="subtitle2"
-                                    sx={{
-                                      mb: 1,
-                                      fontWeight: 600,
-                                      color: "white",
-                                    }}
+                                    sx={{ mb: 1, fontWeight: 600, color: "white" }}
                                   >
                                     Document ID
                                   </Typography>
@@ -721,8 +581,7 @@ export default function DocumentsView({
                                       backgroundColor: "rgba(30, 41, 59, 0.8)",
                                       p: 1,
                                       borderRadius: 1,
-                                      border:
-                                        "1px solid rgba(255, 255, 255, 0.1)",
+                                      border: "1px solid rgba(255, 255, 255, 0.1)",
                                     }}
                                   >
                                     {doc.id}

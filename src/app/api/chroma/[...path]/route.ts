@@ -90,6 +90,54 @@ export async function POST(
   }
 }
 
+export async function DELETE(
+  request: NextRequest,
+  context: RouteContext
+) {
+  const params = await context.params;
+  try {
+    const { searchParams } = new URL(request.url);
+    const chromaHost = searchParams.get('host') || '3.6.132.24';
+    const chromaPort = searchParams.get('port') || '8000';
+    
+    const path = params.path.join('/');
+    const chromaUrl = `http://${chromaHost}:${chromaPort}/${path}`;
+    
+    console.log(`Proxying DELETE request to: ${chromaUrl}`);
+    
+    const response = await fetch(chromaUrl, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    // Handle empty response for DELETE requests
+    let data = {};
+    try {
+      data = await response.json();
+    } catch {
+      // DELETE requests might return empty responses
+      data = { success: true };
+    }
+    
+    return NextResponse.json(data, {
+      status: response.status,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  } catch (error) {
+    console.error('Proxy DELETE error:', error);
+    return NextResponse.json(
+      { error: 'Failed to proxy DELETE request' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
