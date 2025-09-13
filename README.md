@@ -3,6 +3,7 @@
 Just a simple web interface for browsing Chroma DB collections. Nothing fancy, but it gets the job done.
 
 🔗 **Live Demo**: [https://chroma-db-explorer.vercel.app/](https://chroma-db-explorer.vercel.app/)
+<img width="1511" height="758" alt="image" src="https://github.com/user-attachments/assets/57abe155-4b1a-4ba9-ab81-47263d1979da" />
 
 ## What it does
 
@@ -43,13 +44,13 @@ The search tries semantic search first, falls back to text matching if that does
 ## Screenshots
 
 ### Connection Screen
-<img width="1506" height="632" alt="Connection interface" src="https://github.com/user-attachments/assets/d8293818-e51c-4ecd-ab6d-67aeb3add643" />
+
+<img width="1511" height="758" alt="image" src="https://github.com/user-attachments/assets/3efd9ba2-a8e3-4db8-b086-371a254b3ae9" />
+
 
 ### Collections View
-<img width="1506" height="861" alt="Collections table" src="https://github.com/user-attachments/assets/46051518-5f06-4652-9333-6053e2cc1e2d" />
+<img width="1511" height="758" alt="image" src="https://github.com/user-attachments/assets/4e732bde-8307-4817-a153-ca25892c2db3" />
 
-### Document Browser
-<img width="1506" height="861" alt="Document viewer" src="https://github.com/user-attachments/assets/2548e889-0535-4315-a05d-34672f6be0fc" />
 
 ## Notes
 
