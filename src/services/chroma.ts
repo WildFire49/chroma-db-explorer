@@ -384,7 +384,7 @@ export class ChromaService {
     return ids.map((id: string, index: number) => {
       const metadata = metadatas?.[index];
       const document = documents?.[index];
-      
+
       return {
         id: id || `doc_${index}`,
         metadata: metadata && typeof metadata === 'object' ? metadata as Record<string, unknown> : {},
@@ -392,6 +392,112 @@ export class ChromaService {
         embedding: []
       };
     });
+  }
+
+  async deleteDocument(collectionId: string, documentId: string): Promise<boolean> {
+    try {
+      console.log(`Attempting to delete document ${documentId} from collection ${collectionId}`);
+
+      const endpoint = `api/v2/tenants/default_tenant/databases/default_database/collections/${collectionId}/delete`;
+      const url = this.getProxyUrl(endpoint);
+
+      console.log(`Deleting document at: ${url}`);
+
+      const response = await axios.post(url, {
+        ids: [documentId]
+      });
+
+      console.log('✅ Document deleted successfully:', response.data);
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to delete document:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Detailed error info:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          url: error.config?.url
+        });
+      }
+      throw new Error('Failed to delete document from collection');
+    }
+  }
+
+  async deleteDocuments(collectionId: string, documentIds: string[]): Promise<boolean> {
+    try {
+      console.log(`Attempting to delete ${documentIds.length} documents from collection ${collectionId}`);
+
+      const endpoint = `api/v2/tenants/default_tenant/databases/default_database/collections/${collectionId}/delete`;
+      const url = this.getProxyUrl(endpoint);
+
+      console.log(`Deleting documents at: ${url}`);
+
+      const response = await axios.post(url, {
+        ids: documentIds
+      });
+
+      console.log(`✅ ${documentIds.length} documents deleted successfully:`, response.data);
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to delete documents:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Detailed error info:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          url: error.config?.url
+        });
+      }
+      throw new Error('Failed to delete documents from collection');
+    }
+  }
+
+  async updateDocument(
+    collectionId: string,
+    documentId: string,
+    document?: string,
+    metadata?: Record<string, unknown>
+  ): Promise<boolean> {
+    try {
+      console.log(`Attempting to update document ${documentId} in collection ${collectionId}`);
+
+      const endpoint = `api/v2/tenants/default_tenant/databases/default_database/collections/${collectionId}/update`;
+      const url = this.getProxyUrl(endpoint);
+
+      console.log(`Updating document at: ${url}`);
+
+      const payload: {
+        ids: string[];
+        documents?: string[];
+        metadatas?: Record<string, unknown>[];
+      } = {
+        ids: [documentId]
+      };
+
+      if (document !== undefined) {
+        payload.documents = [document];
+      }
+
+      if (metadata !== undefined) {
+        payload.metadatas = [metadata];
+      }
+
+      const response = await axios.post(url, payload);
+
+      console.log('✅ Document updated successfully:', response.data);
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to update document:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Detailed error info:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          url: error.config?.url
+        });
+      }
+      throw new Error('Failed to update document in collection');
+    }
   }
 }
 

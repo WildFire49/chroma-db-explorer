@@ -19,6 +19,14 @@ import {
   Card,
   CardContent,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Checkbox,
+  Snackbar,
 } from "@mui/material";
 import {
   Description,
@@ -26,6 +34,9 @@ import {
   ContentCopy,
   Visibility,
   DataObject,
+  Edit,
+  Delete,
+  DeleteSweep,
 } from "@mui/icons-material";
 import SearchBar from "./SearchBar";
 import { chromaService } from "@/services/chroma";
@@ -45,6 +56,24 @@ export default function DocumentsView({
   const [error, setError] = useState<string | null>(null);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // Edit dialog state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingDocument, setEditingDocument] = useState<Document | null>(null);
+  const [editedContent, setEditedContent] = useState("");
+  const [editedMetadata, setEditedMetadata] = useState("");
+
+  // Delete confirmation state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
+
+  // Bulk selection state
+  const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(new Set());
+
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
   const fetchDocuments = useCallback(async () => {
     try {
@@ -88,6 +117,108 @@ export default function DocumentsView({
   const truncateText = (text: string, maxLength: number = 100) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
+  };
+
+  const showSnackbar = (message: string, severity: "success" | "error" = "success") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleEditClick = (doc: Document) => {
+    setEditingDocument(doc);
+    setEditedContent(doc.document);
+    setEditedMetadata(JSON.stringify(doc.metadata, null, 2));
+    setEditDialogOpen(true);
+  };
+
+  const handleEditSave = async () => {
+    if (!editingDocument) return;
+
+    try {
+      let metadata;
+      try {
+        metadata = JSON.parse(editedMetadata);
+      } catch (e) {
+        showSnackbar("Invalid metadata JSON format", "error");
+        return;
+      }
+
+      await chromaService.updateDocument(
+        collectionId,
+        editingDocument.id,
+        editedContent,
+        metadata
+      );
+
+      showSnackbar("Document updated successfully", "success");
+      setEditDialogOpen(false);
+      fetchDocuments(); // Refresh the document list
+    } catch (err) {
+      showSnackbar(
+        err instanceof Error ? err.message : "Failed to update document",
+        "error"
+      );
+    }
+  };
+
+  const handleDeleteClick = (docId: string) => {
+    setDocumentToDelete(docId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!documentToDelete) return;
+
+    try {
+      await chromaService.deleteDocument(collectionId, documentToDelete);
+      showSnackbar("Document deleted successfully", "success");
+      setDeleteDialogOpen(false);
+      setDocumentToDelete(null);
+      fetchDocuments(); // Refresh the document list
+    } catch (err) {
+      showSnackbar(
+        err instanceof Error ? err.message : "Failed to delete document",
+        "error"
+      );
+    }
+  };
+
+  const handleToggleSelection = (docId: string) => {
+    const newSelected = new Set(selectedDocuments);
+    if (newSelected.has(docId)) {
+      newSelected.delete(docId);
+    } else {
+      newSelected.add(docId);
+    }
+    setSelectedDocuments(newSelected);
+  };
+
+  const handleToggleAllSelection = () => {
+    if (selectedDocuments.size === documents.length) {
+      setSelectedDocuments(new Set());
+    } else {
+      setSelectedDocuments(new Set(documents.map((doc) => doc.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedDocuments.size === 0) return;
+
+    try {
+      await chromaService.deleteDocuments(collectionId, Array.from(selectedDocuments));
+      showSnackbar(
+        `${selectedDocuments.size} document${selectedDocuments.size !== 1 ? "s" : ""} deleted successfully`,
+        "success"
+      );
+      setSelectedDocuments(new Set());
+      fetchDocuments(); // Refresh the document list
+    } catch (err) {
+      showSnackbar(
+        err instanceof Error ? err.message : "Failed to delete documents",
+        "error"
+      );
+    }
   };
 
   if (loading) {
@@ -214,25 +345,47 @@ export default function DocumentsView({
                         documents.length !== 1 ? "s" : ""
                       }`}{" "}
                   in {collectionName}
+                  {selectedDocuments.size > 0 &&
+                    ` (${selectedDocuments.size} selected)`}
                 </Typography>
               </Box>
             </Box>
 
-            {!isSearchMode && (
-              <Chip
-                label={`${documents.length} Total`}
-                sx={{
-                  fontWeight: 600,
-                  background:
-                    "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
-                  color: "white",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  "& .MuiChip-label": {
-                    px: 2,
-                  },
-                }}
-              />
-            )}
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              {selectedDocuments.size > 0 && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<DeleteSweep />}
+                  onClick={handleBulkDelete}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                    },
+                  }}
+                >
+                  Delete {selectedDocuments.size}
+                </Button>
+              )}
+              {!isSearchMode && (
+                <Chip
+                  label={`${documents.length} Total`}
+                  sx={{
+                    fontWeight: 600,
+                    background:
+                      "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
+                    color: "white",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    "& .MuiChip-label": {
+                      px: 2,
+                    },
+                  }}
+                />
+              )}
+            </Box>
           </Box>
 
           {/* Search Bar */}
@@ -312,6 +465,35 @@ export default function DocumentsView({
                 <TableHead>
                   <TableRow sx={{ overflow: "auto" }}>
                     <TableCell
+                      padding="checkbox"
+                      sx={{
+                        width: "50px",
+                        backgroundColor: "rgba(15, 23, 42, 0.98)",
+                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
+                      <Checkbox
+                        indeterminate={
+                          selectedDocuments.size > 0 &&
+                          selectedDocuments.size < documents.length
+                        }
+                        checked={
+                          documents.length > 0 &&
+                          selectedDocuments.size === documents.length
+                        }
+                        onChange={handleToggleAllSelection}
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.5)",
+                          "&.Mui-checked": {
+                            color: "#3b82f6",
+                          },
+                          "&.MuiCheckbox-indeterminate": {
+                            color: "#3b82f6",
+                          },
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
                       sx={{
                         width: "50px",
                         backgroundColor: "rgba(15, 23, 42, 0.98)",
@@ -390,11 +572,24 @@ export default function DocumentsView({
                           },
                         }}
                       >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={selectedDocuments.has(doc.id)}
+                            onChange={() => handleToggleSelection(doc.id)}
+                            sx={{
+                              color: "rgba(255, 255, 255, 0.5)",
+                              "&.Mui-checked": {
+                                color: "#3b82f6",
+                              },
+                            }}
+                          />
+                        </TableCell>
                         <TableCell>
                           <IconButton
                             size="small"
                             onClick={() => toggleRowExpansion(doc.id)}
                             sx={{
+                              color: "rgba(255, 255, 255, 0.7)",
                               transition: "transform 0.2s",
                               transform: expandedRows.has(doc.id)
                                 ? "rotate(180deg)"
@@ -509,6 +704,7 @@ export default function DocumentsView({
                             sx={{
                               display: "flex",
                               gap: 0.5,
+                              justifyContent: "center",
                               opacity: 0,
                               transition: "opacity 0.2s",
                             }}
@@ -518,14 +714,29 @@ export default function DocumentsView({
                                 size="small"
                                 onClick={() => toggleRowExpansion(doc.id)}
                                 sx={{
-                                  backgroundColor: "rgba(59, 130, 246, 0.2)",
-                                  color: "white",
+                                  color: "rgba(255, 255, 255, 0.7)",
                                   "&:hover": {
-                                    backgroundColor: "rgba(59, 130, 246, 0.4)",
+                                    color: "#3b82f6",
+                                    backgroundColor: "rgba(59, 130, 246, 0.1)",
                                   },
                                 }}
                               >
                                 <Visibility fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Edit Document">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleEditClick(doc)}
+                                sx={{
+                                  color: "rgba(255, 255, 255, 0.7)",
+                                  "&:hover": {
+                                    color: "#10b981",
+                                    backgroundColor: "rgba(16, 185, 129, 0.1)",
+                                  },
+                                }}
+                              >
+                                <Edit fontSize="small" />
                               </IconButton>
                             </Tooltip>
                             <Tooltip title="Copy Document ID">
@@ -533,14 +744,29 @@ export default function DocumentsView({
                                 size="small"
                                 onClick={() => copyToClipboard(doc.id)}
                                 sx={{
-                                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                                   color: "rgba(255, 255, 255, 0.7)",
                                   "&:hover": {
-                                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                    color: "#06b6d4",
+                                    backgroundColor: "rgba(6, 182, 212, 0.1)",
                                   },
                                 }}
                               >
                                 <ContentCopy fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete Document">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleDeleteClick(doc.id)}
+                                sx={{
+                                  color: "rgba(255, 255, 255, 0.7)",
+                                  "&:hover": {
+                                    color: "#ef4444",
+                                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                                  },
+                                }}
+                              >
+                                <Delete fontSize="small" />
                               </IconButton>
                             </Tooltip>
                           </Box>
@@ -550,7 +776,7 @@ export default function DocumentsView({
                       {/* Expanded Row Content */}
                       <TableRow>
                         <TableCell
-                          colSpan={isSearchMode ? 6 : 5}
+                          colSpan={isSearchMode ? 7 : 6}
                           sx={{
                             py: 0,
                             borderBottom: expandedRows.has(doc.id)
@@ -741,6 +967,184 @@ export default function DocumentsView({
           )}
         </Box>
       </CardContent>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: "rgba(15, 23, 42, 0.98)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+            },
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: "white", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
+          Edit Document
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          <TextField
+            label="Document Content"
+            multiline
+            rows={8}
+            fullWidth
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            sx={{
+              mb: 2,
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                "& fieldset": {
+                  borderColor: "rgba(255, 255, 255, 0.3)",
+                },
+                "&:hover fieldset": {
+                  borderColor: "rgba(255, 255, 255, 0.5)",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#3b82f6",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "rgba(255, 255, 255, 0.7)",
+              },
+            }}
+          />
+          <TextField
+            label="Metadata (JSON)"
+            multiline
+            rows={6}
+            fullWidth
+            value={editedMetadata}
+            onChange={(e) => setEditedMetadata(e.target.value)}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                color: "white",
+                fontFamily: "monospace",
+                "& fieldset": {
+                  borderColor: "rgba(255, 255, 255, 0.3)",
+                },
+                "&:hover fieldset": {
+                  borderColor: "rgba(255, 255, 255, 0.5)",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#3b82f6",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "rgba(255, 255, 255, 0.7)",
+              },
+            }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", p: 2 }}>
+          <Button
+            onClick={() => setEditDialogOpen(false)}
+            sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleEditSave}
+            variant="contained"
+            sx={{
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+              },
+            }}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        slotProps={{
+          paper: {
+            sx: {
+              backgroundColor: "rgba(15, 23, 42, 0.98)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+            },
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: "white", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
+          Confirm Delete
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          <Typography sx={{ color: "rgba(255, 255, 255, 0.9)" }}>
+            Are you sure you want to delete this document? This action cannot be undone.
+          </Typography>
+          {documentToDelete && (
+            <Typography
+              sx={{
+                mt: 2,
+                p: 1,
+                backgroundColor: "rgba(30, 41, 59, 0.8)",
+                borderRadius: 1,
+                fontFamily: "monospace",
+                fontSize: "0.875rem",
+                color: "rgba(255, 255, 255, 0.7)",
+              }}
+            >
+              Document ID: {documentToDelete}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", p: 2 }}>
+          <Button
+            onClick={() => setDeleteDialogOpen(false)}
+            sx={{ color: "rgba(255, 255, 255, 0.7)" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            color="error"
+            sx={{
+              background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+              },
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{
+            width: "100%",
+            backgroundColor: snackbarSeverity === "success"
+              ? "rgba(16, 185, 129, 0.9)"
+              : "rgba(239, 68, 68, 0.9)",
+            color: "white",
+            "& .MuiAlert-icon": {
+              color: "white",
+            },
+          }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 }
