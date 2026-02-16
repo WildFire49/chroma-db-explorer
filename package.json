@@ -17,7 +17,7 @@
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.11.0",
     "chromadb": "^3.0.10",
-    "next": "15.4.5",
+    "next": "^16.1.6",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
@@ -28,7 +28,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.4.5",
+    "eslint-config-next": "^16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
